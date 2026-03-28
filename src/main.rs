@@ -14,17 +14,20 @@ fn main() {
     let input = vec![1.0, 1.0, 1.0];
     let output = linear.forward(&input);
     println!("{:?}", output);
-    println!("{} {} {}", sigmoid(0.5), sigmoid(-30.0), sigmoid(4.5));
+    println!("Sigmoid({}) = {}", 0.5, sigmoid(0.5));
+    println!("Sigmoid({}) = {}", -30.0, sigmoid(-30.0));
+    println!("Sigmoid({}) = {}", 4.5, sigmoid(4.5));
+    for y in vec![0.0, 1.0] {
+        for x in vec![0.2, 0.4, 0.6, 0.8] {
+            println!("BCE(x={},y={}) = {}", x, y, binary_cross_entropy(x, y));
+        }
+    }
 }
 
 fn random_vector(low: f32, high: f32, size: usize) -> Vec<f32> {
     let dist = Uniform::new(low, high).unwrap();
     let rng = rand::rng();
     dist.sample_iter(rng).take(size).collect()
-}
-
-fn sigmoid(x: f32) -> f32 {
-    1.0 / (1.0 + (-x).exp())
 }
 
 struct Linear {
@@ -51,4 +54,22 @@ impl Linear {
         }
         output
     }
+}
+
+fn sigmoid(x: f32) -> f32 {
+    1.0 / (1.0 + (-x).exp())
+}
+
+fn binary_cross_entropy(x: f32, y: f32) -> f32 {
+    assert!(
+        x > 0.0 && x < 1.0,
+        "Input {} is not a valid probability.",
+        x,
+    );
+    assert!(
+        y == 0.0 || y == 1.0,
+        "Input {} is not a valid probability.",
+        y,
+    );
+    -(1.0 - y) * (1.0 - x).ln() - y * x.ln()
 }
