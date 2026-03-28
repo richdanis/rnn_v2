@@ -14,12 +14,17 @@ fn main() {
     let input = vec![1.0, 1.0, 1.0];
     let output = linear.forward(&input);
     println!("{:?}", output);
+    println!("{} {} {}", sigmoid(0.5), sigmoid(-30.0), sigmoid(4.5));
 }
 
 fn random_vector(low: f32, high: f32, size: usize) -> Vec<f32> {
     let dist = Uniform::new(low, high).unwrap();
     let rng = rand::rng();
     dist.sample_iter(rng).take(size).collect()
+}
+
+fn sigmoid(x: f32) -> f32 {
+    1.0 / (1.0 + (-x).exp())
 }
 
 struct Linear {
